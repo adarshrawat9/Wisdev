@@ -1,0 +1,22 @@
+# Wisdev
+
+Developer Analytics Platform
+
+## Tech Stack
+
+- Go
+- Gin
+- PostgreSQL
+- Docker
+
+## Setup
+
+1. Clone repository
+2. Create .env
+3. Run:
+
+docker compose up -d
+
+4. Start API:
+
+go run ./cmd/api
