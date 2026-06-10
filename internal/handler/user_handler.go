@@ -3,6 +3,7 @@ package handler
 import (
 	"Wisdev/internal/dto"
 	"Wisdev/internal/services"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -41,5 +42,41 @@ func (u *UserHandler)SignIn(c *gin.Context){
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "user registered successfully",
 	})
+
+}
+
+func (u *UserHandler)Login(c *gin.Context){
+
+	var req dto.LoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":"invalid request",
+		})
+	}
+
+	token, err := u.service.Login(req)
+	if err != nil{
+		
+		if err.Error() == "Invalid credentials"{
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid credentials",
+			})
+			return
+		}
+
+		log.Printf("login failed: %v", err)
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":"something unexpected occured",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
+
+
 
 }

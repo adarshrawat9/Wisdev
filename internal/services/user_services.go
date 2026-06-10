@@ -53,3 +53,27 @@ func (s *UserService) Register(req dto.RegisterRequest)(*model.User, error){
 
 }
 
+
+func (s *UserService) Login(req dto.LoginRequest) (string, error){
+
+	user, err := s.repo.GetByEmail(req.Email)
+	if err == pgx.ErrNoRows{
+		return "", errors.New("Invalid credentials")
+	}
+	if err != nil{
+		return "", err
+	}
+
+    err = utils.VerifyPassword(user.PasswordHash, req.Password)
+	if err != nil{
+		return "", errors.New("invalid credentials")
+	}
+
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil{
+		return "", err
+	}
+
+	return token, nil
+	
+}

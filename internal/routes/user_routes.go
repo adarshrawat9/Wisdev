@@ -14,5 +14,6 @@ func RegisterUserRoutes(
 	auth := router.Group("/auth")
 	{
 		auth.POST("/register", userHandler.SignIn)
+		auth.POST("/login", userHandler.Login)
 	}
 }
