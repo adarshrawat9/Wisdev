@@ -29,6 +29,7 @@ func ConnectDB() error{
 	}
 
 	if err := pool.Ping(context.Background()); err != nil{
+		pool.Close()
 		return err
 	}
 

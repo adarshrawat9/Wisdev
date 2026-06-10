@@ -1,7 +1,8 @@
 package main
 
 import (
-	"Wisdev/internals/database"
+	"Wisdev/internal/database"
+	"Wisdev/internal/server"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -19,4 +20,10 @@ func main(){
 	}
 
 	log.Println("successfully connected to postgres")
+
+	server := server.New()
+
+	if err := server.Run(":8080"); err != nil{
+		log.Fatalf("error starting server: %v", err)
+	}
 }
