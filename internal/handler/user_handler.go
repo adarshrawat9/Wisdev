@@ -104,3 +104,38 @@ func (u *UserHandler) Me(c *gin.Context) {
 	})
 
 }
+
+func (u *UserHandler) UpdateUserDetails(c *gin.Context){
+
+	userId := c.GetString("userId")
+
+	var req dto.UpdateUserProfile
+
+	if err := c.ShouldBindJSON(&req); err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid values passed",
+		})
+		return
+	}
+
+	user, err := u.service.UpdateUserDetails(userId, req)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	var userResponse = dto.UserResponse{
+	    	ID: user.ID,
+	    	Username: user.Username,
+	    	Email: user.Email,
+	    	Bio: user.Bio,
+	    	GithubUsername: user.GithubUsername,
+	    	PortfolioWebsite: user.PortfolioWebsite,
+	    	AvatarURL: user.AvatarURL,
+	    }
+
+	c.JSON(http.StatusOK, userResponse)
+
+
+}

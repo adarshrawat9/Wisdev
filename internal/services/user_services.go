@@ -85,3 +85,41 @@ func (s *UserService) GetById(userId string) (*model.User, error){
 	}
 	return user, nil
 }
+
+func (s *UserService) UpdateUserDetails(userId string, req dto.UpdateUserProfile) (*model.User, error){
+	user, err := s.GetById(userId)
+	if err != nil{
+		return nil, err
+	}
+	
+
+	if req.Bio != nil{
+		if len(*req.Bio) > 500 {
+			return nil, errors.New("bio cannot exceed 500 characters")
+		}
+		user.Bio = req.Bio
+	}
+
+	if req.GithubUsername != nil{
+		if len(*req.GithubUsername) > 39 {
+			return nil, errors.New("github username cannot exceed 39 characters")
+		}
+		user.GithubUsername = req.GithubUsername
+	}
+
+	if req.PortfolioWebsite != nil{
+		if len(*req.PortfolioWebsite) > 255 {
+			return nil, errors.New("portfolio website is too long")
+		}
+		user.PortfolioWebsite = req.PortfolioWebsite
+	}
+
+	if req.AvatarURL != nil{
+		if len(*req.AvatarURL) > 255 {
+			return nil, errors.New("avatar url is too long")
+		}
+		user.AvatarURL= req.AvatarURL
+	}
+
+	return s.repo.UpdateUserDetails(user)
+}

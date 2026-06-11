@@ -120,3 +120,52 @@ func (r *UserRepository) GetById(userId string) (*model.User, error){
 		}
 	return &user, nil 	
 }
+
+
+func (r *UserRepository) UpdateUserDetails(user *model.User) (*model.User, error){
+
+    query := `
+	 	UPDATE users
+		SET
+		    bio = $1,
+			github_username = $2,
+			portfolio_website = $3,
+    		avatar_url = $4,
+    		updated_at = NOW()
+			WHERE id = $5
+			RETURNING
+			id,
+            username,
+            email,
+            portfolio_website,
+            github_username,
+            avatar_url,
+            bio,
+            created_at,
+            updated_at 
+			`
+
+
+	err := r.db.QueryRow(context.Background(),
+				query,
+				user.Bio,
+				user.GithubUsername,
+				user.PortfolioWebsite,
+				user.AvatarURL,
+				user.ID,
+			).Scan(
+			 &user.ID,
+             &user.Username,
+             &user.Email,
+             &user.PortfolioWebsite,
+             &user.GithubUsername,
+             &user.AvatarURL,
+             &user.Bio,
+             &user.CreatedAt,
+             &user.UpdatedAt,
+			)
+	if err != nil{
+		return nil, err
+	}		
+	return user, nil
+}
