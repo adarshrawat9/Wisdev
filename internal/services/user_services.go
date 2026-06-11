@@ -77,3 +77,11 @@ func (s *UserService) Login(req dto.LoginRequest) (string, error){
 	return token, nil
 	
 }
+
+func (s *UserService) GetById(userId string) (*model.User, error){
+	user, err := s.repo.GetById(userId)
+	if err != nil{
+		return nil, err
+	}
+	return user, nil
+}
