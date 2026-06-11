@@ -91,6 +91,14 @@ func (s *UserService) UpdateUserDetails(userId string, req dto.UpdateUserProfile
 	if err != nil{
 		return nil, err
 	}
+
+	if req.Bio == nil &&
+	req.GithubUsername == nil &&
+	req.PortfolioWebsite == nil &&
+	req.AvatarURL == nil {
+
+	return nil, errors.New("at least one field must be provided")
+}
 	
 
 	if req.Bio != nil{

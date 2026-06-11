@@ -125,7 +125,7 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context){
 		})
 		return
 	}
-	var userResponse = dto.UserResponse{
+	userResponse := dto.UserResponse{
 	    	ID: user.ID,
 	    	Username: user.Username,
 	    	Email: user.Email,
