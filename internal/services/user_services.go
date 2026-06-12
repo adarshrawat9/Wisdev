@@ -6,7 +6,6 @@ import (
 	"Wisdev/internal/repositories"
 	"Wisdev/internal/utils"
 	"errors"
-	"net/url"
 
 	"github.com/jackc/pgx/v5"
 )
