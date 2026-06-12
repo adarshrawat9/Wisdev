@@ -6,6 +6,7 @@ import (
 	"Wisdev/internal/repositories"
 	"Wisdev/internal/utils"
 	"errors"
+	"net/url"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -119,12 +120,21 @@ func (s *UserService) UpdateUserDetails(userId string, req dto.UpdateUserProfile
 		if len(*req.PortfolioWebsite) > 255 {
 			return nil, errors.New("portfolio website is too long")
 		}
+
+		if !utils.IsValidURL(*req.PortfolioWebsite){
+			return nil, errors.New("invalid portfolio url")
+		}
 		user.PortfolioWebsite = req.PortfolioWebsite
 	}
+	
 
 	if req.AvatarURL != nil{
 		if len(*req.AvatarURL) > 255 {
 			return nil, errors.New("avatar url is too long")
+		}
+
+		if !utils.IsValidURL(*req.AvatarURL) {
+		return nil, errors.New("invalid avatar url")
 		}
 		user.AvatarURL= req.AvatarURL
 	}
