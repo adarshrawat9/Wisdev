@@ -14,7 +14,7 @@ func RegisterUserRoutes(
 ){
 	auth := router.Group("/auth")
 	{
-		auth.POST("/register", userHandler.SignIn)
+		auth.POST("/register", userHandler.SignUp)
 		auth.POST("/login", userHandler.Login)
 
 		// protected routes needs to validate jwt

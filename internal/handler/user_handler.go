@@ -22,7 +22,7 @@ func NewUserHandler(service *services.UserService) *UserHandler{
 	}
 }
 
-func (u *UserHandler)SignIn(c *gin.Context){
+func (u *UserHandler)SignUp(c *gin.Context){
 	
 	var req dto.RegisterRequest
 
