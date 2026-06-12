@@ -3,10 +3,12 @@ package handler
 import (
 	"Wisdev/internal/dto"
 	"Wisdev/internal/services"
+	"errors"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5"
 )
 
 
@@ -137,5 +139,36 @@ func (u *UserHandler) UpdateUserDetails(c *gin.Context){
 
 	c.JSON(http.StatusOK, userResponse)
 
+
+}
+
+func (u *UserHandler) GetPublicProfile(c *gin.Context){
+
+	username := c.Param("username")
+
+	user, err := u.service.GetPublicProfile(username)
+	if err != nil{
+		if errors.Is(err, pgx.ErrNoRows) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "user not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"error": "internal server error",
+	})
+	return
+	}
+
+	response := dto.PublicProfileResponse{
+		Username: user.Username,
+		Bio : user.Bio,
+		GithubUsername: user.GithubUsername,
+		PortfolioWebsite: user.PortfolioWebsite,
+		AvatarURL: user.AvatarURL,
+	}
+
+	c.JSON(http.StatusOK, response)
 
 }

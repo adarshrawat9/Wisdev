@@ -169,3 +169,43 @@ func (r *UserRepository) UpdateUserDetails(user *model.User) (*model.User, error
 	}		
 	return user, nil
 }
+
+
+func (r *UserRepository) GetByUsername(username string) (*model.User, error){
+
+	var user model.User
+	query := `
+		SELECT id,
+				username,
+				email,
+				password_hash,
+				github_username,
+				portfolio_website,
+				avatar_url,
+				bio,
+				created_at,
+				updated_at FROM users WHERE username = $1
+			`
+
+	err :=	r.db.QueryRow(context.Background(),
+				query,
+				username,
+			).Scan(
+				&user.ID,
+				&user.Username,
+				&user.Email,
+				&user.PasswordHash,
+				&user.GithubUsername,
+				&user.PortfolioWebsite,
+				&user.AvatarURL,
+				&user.Bio,
+				&user.CreatedAt,
+				&user.UpdatedAt,
+			)		
+
+	if err != nil{
+		return nil , err
+	}		
+	return &user, nil
+
+}

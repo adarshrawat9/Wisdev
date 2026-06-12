@@ -22,4 +22,9 @@ func RegisterUserRoutes(
 		protected.Use(middleware.AuthMiddleware)
 		protected.GET("/me", userHandler.Me)
 	}
+
+	users := router.Group("/users")
+	{
+		users.GET("/:username", userHandler.GetPublicProfile)
+	}
 }

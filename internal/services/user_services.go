@@ -98,7 +98,7 @@ func (s *UserService) UpdateUserDetails(userId string, req dto.UpdateUserProfile
 	req.AvatarURL == nil {
 
 	return nil, errors.New("at least one field must be provided")
-}
+    }
 	
 
 	if req.Bio != nil{
@@ -139,4 +139,13 @@ func (s *UserService) UpdateUserDetails(userId string, req dto.UpdateUserProfile
 	}
 
 	return s.repo.UpdateUserDetails(user)
+}
+
+func (s *UserService) GetPublicProfile(username string) (*model.User, error){
+
+	user, err := s.repo.GetByUsername(username)
+	if err != nil{
+		return nil, err
+	}
+	return user, nil
 }
