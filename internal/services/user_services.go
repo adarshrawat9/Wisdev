@@ -23,9 +23,30 @@ func NewUserService(repo *repositories.UserRepository) *UserService{
 
 func (s *UserService) Register(req dto.RegisterRequest)(*model.User, error){
 
+	if err := utils.ValidateUsername(req.Username); err != nil{
+		return nil, err
+	}
+
+	if err := utils.ValidateEmail(req.Email); err != nil{
+		return nil, err
+	}
+
+	if err := utils.ValidatePassword(req.Password); err != nil {
+        return nil, err
+    }
+
+
 	user, err := s.repo.GetByEmail(req.Email)
 	if err == nil{
 		return nil, errors.New("email already exist")
+	}
+	if err != pgx.ErrNoRows{
+		return nil, err
+	}
+
+	user, err = s.repo.GetByUsername(req.Username)
+	if err == nil{
+		return nil, errors.New("username already taken")
 	}
 	if err != pgx.ErrNoRows{
 		return nil, err
