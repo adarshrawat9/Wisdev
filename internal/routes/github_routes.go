@@ -1,12 +1,16 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"Wisdev/internal/handler"
+
+	"github.com/gin-gonic/gin"
+)
 
 
 func RegisterGithubRoutes(
-	routes *gin.Engine,
-	githubHandler gin.HandlerFunc,
+	router *gin.Engine,
+	githubHandler *handler.GithubHandler,
 ){
-	routes.GET("/github/:username", githubHandler)
+	router.GET("/github/:username", githubHandler.GetUser)
 }
 

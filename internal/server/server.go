@@ -29,7 +29,7 @@ func New()*gin.Engine{
 
 	// register routes
 	routes.RegisterUserRoutes(r, userHandler)
-	routes.RegisterGithubRoutes(r, githubHandler.GetUser)
+	routes.RegisterGithubRoutes(r, githubHandler)
 
 	r.GET("/health", func (c *gin.Context)  {
 		c.JSON(http.StatusOK, gin.H{"staus":"ok"})
