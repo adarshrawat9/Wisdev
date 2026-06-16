@@ -1,15 +1,16 @@
 package github
 
 import (
+	"bytes"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
 type Client struct{
 	httpClient *http.Client
+	token      string
 }
 
 
@@ -18,34 +19,66 @@ func NewClient() *Client{
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
+		token: os.Getenv("GITHUB_TOKEN"),
 	}
 }
 
 
-func (c *Client) GetUser(username string) (*User, error){
-	
-	url := fmt.Sprintf("https://api.github.com/users/%s",username,)
 
-	response, err := c.httpClient.Get(url)
+func (c *Client) GetUser(username string) (*User, error){
+
+	reqBody := graphQLRequest{
+		Query: getUserQuery,
+		Variables: map[string]any{
+			"login" : username,
+		},
+	}
+
+	body, err := json.Marshal(reqBody)
+	if err != nil{
+		return nil, err
+	}
+	
+	req, err := http.NewRequest(
+		http.MethodPost,
+	    "https://api.github.com/graphql",
+	    bytes.NewBuffer(body),
+	)
+	if err != nil{
+		return nil, err
+	}
+
+	req.Header.Set(
+		"Authorization",
+		"Bearer" + c.token,
+	)
+	req.Header.Set(
+		"Content-Type",
+		"application/json",
+	)
+
+	response, err := c.httpClient.Do(req)
 	if err != nil{
 		return nil, err
 	}
 	defer response.Body.Close()
 
-	if response.StatusCode == http.StatusNotFound{
-		return nil, errors.New("github user not foung")
-	}
+	var gqlResp graphQLResponse
 
-	if response.StatusCode != http.StatusOK{
-		return nil, fmt.Errorf("github responded with %d status code", response.StatusCode)
-	}
-
-	var user User
-
-	err = json.NewDecoder(response.Body).Decode(&user)
-	if err != nil{
-		return nil, err
-	}
-
-	return &user, nil
+err = json.NewDecoder(response.Body).Decode(&gqlResp)
+if err != nil {
+	return nil, err
 }
+
+user := &User{
+	Name: gqlResp.Data.User.Name,
+	Bio: gqlResp.Data.User.Bio,
+	AvatarURL: gqlResp.Data.User.AvatarURL,
+	Followers: gqlResp.Data.User.Followers.TotalCount,
+	Following: gqlResp.Data.User.Following.TotalCount,
+	PublicRepos: gqlResp.Data.User.Repositories.TotalCount,
+}
+
+return user, nil
+}
+
