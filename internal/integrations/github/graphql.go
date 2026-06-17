@@ -50,3 +50,33 @@ query($login: String!) {
   }
 }
 `
+
+const getUserRepositoriesQuery = `
+query($login: String!) {
+  user(login: $login) {
+    repositories(
+      first: 100,
+      ownerAffiliations: OWNER,
+      orderBy: {
+        field: STARGAZERS,
+        direction: DESC
+      }
+    ) {
+      nodes {
+        name
+        description
+        stargazerCount
+        forkCount
+
+        primaryLanguage {
+          name
+        }
+
+        url
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+`
