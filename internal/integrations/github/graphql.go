@@ -1,5 +1,6 @@
 package github
 
+import "time"
 
 type graphQLRequest struct {
 	Query     string         `json:"query"`
@@ -23,6 +24,30 @@ type graphQLResponse struct {
 
 			Repositories struct {
 				TotalCount int `json:"totalCount"`
+			} `json:"repositories"`
+		} `json:"user"`
+	} `json:"data"`
+}
+
+
+type repositoriesResponse struct {
+	Data struct {
+		User struct {
+			Repositories struct {
+				Nodes []struct {
+					Name           string `json:"name"`
+					Description    string `json:"description"`
+					StargazerCount int    `json:"stargazerCount"`
+					ForkCount      int    `json:"forkCount"`
+
+					PrimaryLanguage *struct {
+						Name string `json:"name"`
+					} `json:"primaryLanguage"`
+
+					URL       string    `json:"url"`
+					CreatedAt time.Time `json:"createdAt"`
+					UpdatedAt time.Time `json:"updatedAt"`
+				} `json:"nodes"`
 			} `json:"repositories"`
 		} `json:"user"`
 	} `json:"data"`
