@@ -20,3 +20,7 @@ func NewService(client *Client) *Service{
 func (s *Service) GetUser(username string) (*User, error) {
 	return s.client.GetUser(username)
 }
+
+func (s *Service) GetUserRepositories(username string) ([]Repository, error){
+	return s.client.GetUserRepositories(username)
+}

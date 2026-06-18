@@ -12,5 +12,6 @@ func RegisterGithubRoutes(
 	githubHandler *handler.GithubHandler,
 ){
 	router.GET("/github/:username", githubHandler.GetUser)
+	router.GET("/github/:username/repo", githubHandler.GetUserRepositories)
 }
 

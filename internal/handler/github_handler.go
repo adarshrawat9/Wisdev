@@ -32,3 +32,24 @@ func (h *GithubHandler) GetUser(c *gin.Context){
 	c.JSON(http.StatusOK, user)
 
 }
+
+func (h *GithubHandler) GetUserRepositories(c *gin.Context){
+
+	username := c.Param("username")
+
+	repositories, err := h.service.GetUserRepositories(username)
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, 
+		gin.H{
+			"error" : err.Error(),
+		})
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		repositories,
+	)
+
+
+}
