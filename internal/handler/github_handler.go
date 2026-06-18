@@ -53,3 +53,29 @@ func (h *GithubHandler) GetUserRepositories(c *gin.Context){
 
 
 }
+
+func (h *GithubHandler) GetUserAnalytics(
+	c *gin.Context,
+) {
+
+	username := c.Param("username")
+
+	analytics, err := h.service.GetUserAnalytics(
+		username,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"error": err.Error(),
+			},
+		)
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		analytics,
+	)
+}
