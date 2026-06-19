@@ -79,3 +79,22 @@ func (h *GithubHandler) GetUserAnalytics(
 		analytics,
 	)
 }
+
+
+func (h *GithubHandler) GetUserContributions(c *gin.Context){
+
+	username := c.Param("username")
+
+	contributions, err := h.service.GetUserContributions(username)
+	if err != nil{
+		c.JSON(http.StatusInternalServerError,
+		gin.H{
+			"error": err.Error(),
+		})
+		return 
+	}
+	c.JSON(
+		http.StatusOK,
+		contributions,
+	)
+}

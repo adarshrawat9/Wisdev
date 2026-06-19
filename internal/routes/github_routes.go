@@ -14,5 +14,6 @@ func RegisterGithubRoutes(
 	router.GET("/github/:username", githubHandler.GetUser)
 	router.GET("/github/:username/repo", githubHandler.GetUserRepositories)
 	router.GET("github/:username/analytics", githubHandler.GetUserAnalytics)
+	router.GET("/github/:username/contributions", githubHandler.GetUserContributions)
 }
 

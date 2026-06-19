@@ -96,3 +96,9 @@ func (c *Service) GetUserAnalytics(username string) (*Analytics, error){
 	
 
 }
+
+
+func (s *Service) GetUserContributions(username string) ( *Contributions,  error){
+
+	return s.client.GetUserContributions(username)
+}
