@@ -43,3 +43,11 @@ type Analytics struct {
 	Languages         []LanguageStats    `json:"top_language"`
 	TopRepositories   []TopRepository    `json:"top_repositories"`
 }      
+
+type Contributions struct {
+	TotalCommits         int       `json:"total_commits"`
+	TotalIssues          int       `json:"total_issues"`
+	TotalPullRequests    int       `json:"total_pull_requests"`
+	TotalReviews         int       `json:"total_reviews"`
+	TotalContributions    int      `json:"total_contributions"`
+}   

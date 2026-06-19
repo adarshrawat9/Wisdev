@@ -53,6 +53,19 @@ type repositoriesResponse struct {
 	} `json:"data"`
 }
 
+type contributionsResponse struct {
+	Data struct {
+		User struct {
+			ContributionsCollection struct {
+				TotalCommitContributions            int `json:"totalCommitContributions"`
+				TotalIssueContributions             int `json:"totalIssueContributions"`
+				TotalPullRequestContributions       int `json:"totalPullRequestContributions"`
+				TotalPullRequestReviewContributions int `json:"totalPullRequestReviewContributions"`
+			} `json:"contributionsCollection"`
+		} `json:"user"`
+	} `json:"data"`
+}
+
 
 const getUserQuery = `
 query($login: String!) {
@@ -101,6 +114,24 @@ query($login: String!) {
         createdAt
         updatedAt
       }
+    }
+  }
+}
+`
+
+const getUserContributionsQuery = `
+query($login: String!) {
+  user(login: $login) {
+
+    contributionsCollection {
+
+      totalCommitContributions
+
+      totalIssueContributions
+
+      totalPullRequestContributions
+
+      totalPullRequestReviewContributions
     }
   }
 }
