@@ -164,3 +164,67 @@ return repositories, nil
 
 
 }
+
+
+func (c *Client) GetUserContributions(username string) (*Contributions, error){
+
+	reqBody := graphQLRequest{
+		Query: getUserContributionsQuery,
+		Variables: map[string]any{
+			"login" : username,
+		},
+
+	}
+
+	body, err := json.Marshal(reqBody)
+	if err != nil{
+		return nil, err
+	}
+
+	req , err := http.NewRequest(
+		http.MethodPost,
+		"https://api.github.com/graphql",
+		bytes.NewBuffer(body),
+	)
+	if err != nil{
+		return nil, err
+	}
+
+	req.Header.Set(
+		"Authorization",
+		"Bearer "+c.token,
+	)
+	req.Header.Set(
+		"Content-Type",
+		"application/json",
+	)
+
+	response, err := c.httpClient.Do(req)
+	if err != nil{
+		return nil, err
+	}
+
+	defer response.Body.Close()
+
+	var graphqlResponse contributionsResponse
+
+	err = json.NewDecoder(response.Body).Decode(&graphqlResponse)
+	if err != nil{
+		return nil, err
+	}
+
+	contributions := &Contributions{
+		TotalCommits: graphqlResponse.Data.User.ContributionsCollection.TotalCommitContributions,
+		TotalIssues: graphqlResponse.Data.User.ContributionsCollection.TotalIssueContributions,
+		TotalPullRequests: graphqlResponse.Data.User.ContributionsCollection.TotalPullRequestContributions,
+		TotalReviews: graphqlResponse.Data.User.ContributionsCollection.TotalPullRequestReviewContributions,
+    }
+
+	contributions.TotalContributions = contributions.TotalCommits +
+									   contributions.TotalIssues +
+									   contributions.TotalPullRequests +
+									   contributions.TotalReviews							
+
+	return contributions, nil
+
+}
