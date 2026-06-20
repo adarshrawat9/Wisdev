@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"os"
 	"time"
@@ -310,9 +311,10 @@ func (c *Client) GetUserGrowthAnalytics(username string) (*GrowthAnalytics, erro
 	growth.BestDayContributions = bestDays
 	
 	if activeDays > 0 {
-		growth.AverageContributionsDay =
-			float64(growth.TotalContributions) /
-				float64(activeDays)
+		growth.AverageContributionsDay = math.Round(
+			(float64(growth.TotalContributions) /
+				float64(activeDays))*100,
+			)/100
 	}
 
 	return growth, nil
