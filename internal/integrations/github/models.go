@@ -49,5 +49,12 @@ type Contributions struct {
 	TotalIssues          int       `json:"total_issues"`
 	TotalPullRequests    int       `json:"total_pull_requests"`
 	TotalReviews         int       `json:"total_reviews"`
-	TotalContributions    int      `json:"total_contributions"`
+	TotalContributions   int       `json:"total_contributions"`
 }   
+
+type GrowthAnalytics struct {
+	TotalContributions       int     `json:"total_contributions"`
+	ActiveDays               int     `json:"active_days"`
+	AverageContributionsDay  float64 `json:"average_contributions_per_day"`
+	BestDayContributions     int     `json:"best_day_contributions"`
+}

@@ -66,6 +66,24 @@ type contributionsResponse struct {
 	} `json:"data"`
 }
 
+type growthResponse struct {
+	Data struct {
+		User struct {
+			ContributionsCollection struct {
+				ContributionCalendar struct {
+					TotalContributions int `json:"totalContributions"`
+
+					Weeks []struct {
+						ContributionDays []struct {
+							ContributionCount int `json:"contributionCount"`
+						} `json:"contributionDays"`
+					} `json:"weeks"`
+				} `json:"contributionCalendar"`
+			} `json:"contributionsCollection"`
+		} `json:"user"`
+	} `json:"data"`
+}
+
 
 const getUserQuery = `
 query($login: String!) {
@@ -132,6 +150,24 @@ query($login: String!) {
       totalPullRequestContributions
 
       totalPullRequestReviewContributions
+    }
+  }
+}
+`
+
+const getUserGrowthAnalyticsQuery = `
+query($login: String!) {
+  user(login: $login) {
+    contributionsCollection {
+      contributionCalendar {
+        totalContributions
+
+        weeks {
+          contributionDays {
+            contributionCount
+          }
+        }
+      }
     }
   }
 }
