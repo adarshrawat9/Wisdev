@@ -228,3 +228,92 @@ func (c *Client) GetUserContributions(username string) (*Contributions, error){
 	return contributions, nil
 
 }
+
+
+func (c *Client) GetUserGrowthAnalytics(username string) (*GrowthAnalytics, error){
+
+	reqBody := graphQLRequest{
+		Query: getUserGrowthAnalyticsQuery,
+		Variables: map[string]any{
+			"login": username,
+		},
+	}
+
+	body, err := json.Marshal(reqBody)
+	if err != nil{
+		return nil, err
+	}
+
+	req, err := http.NewRequest(
+		http.MethodPost,
+		"https://api.github.com/graphql",
+		bytes.NewBuffer(body),
+	)
+	if err != nil{
+		return nil, err
+	}
+
+	req.Header.Set(
+		"Authorization",
+		"Bearer "+ c.token,
+	)
+	req.Header.Set(
+		"Content-Type",
+		"application/json",
+	)
+
+	response, err := c.httpClient.Do(req)
+	if err != nil{
+		return nil, err
+	}
+
+	defer response.Body.Close()
+
+	var graphqlResponse growthResponse
+
+	err = json.NewDecoder(response.Body).Decode(&graphqlResponse)
+	if err != nil{
+		return nil, err
+	}
+
+	growth := &GrowthAnalytics{
+		TotalContributions: graphqlResponse.
+							Data.User.
+							ContributionsCollection.
+							ContributionCalendar.
+							TotalContributions,
+	}
+
+	activeDays := 0
+	bestDays := 0
+
+	for _, week := range graphqlResponse.
+						 Data.
+						 User.
+						 ContributionsCollection.
+						 ContributionCalendar.
+						 Weeks{
+
+							for _, day := range week.ContributionDays{
+
+								if day.ContributionCount > 0{
+									activeDays++
+								}
+
+								if day.ContributionCount > bestDays{
+									bestDays = day.ContributionCount
+								}
+							}
+						 }
+
+	growth.ActiveDays = activeDays
+	growth.BestDayContributions = bestDays
+	
+	if activeDays > 0 {
+		growth.AverageContributionsDay =
+			float64(growth.TotalContributions) /
+				float64(activeDays)
+	}
+
+	return growth, nil
+}
