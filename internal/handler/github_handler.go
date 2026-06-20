@@ -98,3 +98,29 @@ func (h *GithubHandler) GetUserContributions(c *gin.Context){
 		contributions,
 	)
 }
+
+func (h *GithubHandler) GetUserGrowthAnalytics(
+	c *gin.Context,
+) {
+
+	username := c.Param("username")
+
+	growth, err := h.service.GetUserGrowthAnalytics(
+		username,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"error": err.Error(),
+			},
+		)
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		growth,
+	)
+}

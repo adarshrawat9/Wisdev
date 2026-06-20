@@ -102,3 +102,9 @@ func (s *Service) GetUserContributions(username string) ( *Contributions,  error
 
 	return s.client.GetUserContributions(username)
 }
+
+
+func (s *Service) GetUserGrowthAnalytics(username string) (*GrowthAnalytics, error){
+
+	return s.client.GetUserGrowthAnalytics(username)
+}
